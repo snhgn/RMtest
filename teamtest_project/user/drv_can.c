@@ -1,193 +1,90 @@
-/**
- * @file drv_can.c
- * @author yssickjgd (1345578933@qq.com)
- * @brief 仿照SCUT-Robotlab改写的CAN通信初始化与配置流程
- * @version 0.1
- * @date 2022-08-02
- *
- * @copyright USTC-RoboWalker (c) 2022
- *
- */
-
-/* Includes ------------------------------------------------------------------*/
-
 #include "drv_can.h"
 
-/* Private macros ------------------------------------------------------------*/
-
-/* Private types -------------------------------------------------------------*/
-
-/* Private variables ---------------------------------------------------------*/
-
-struct Struct_CAN_Manage_Object CAN1_Manage_Object = {0};
-
-// CAN通信发送缓冲区
+Struct_CAN_Manage_Object CAN1_Manage_Object = {0};
 uint8_t CAN1_0x200_Tx_Data[8];
+Motor_Measure_t motor_chassis[4]; // 电机反馈数据
 
-
-/* Private function declarations ---------------------------------------------*/
-
-/* function prototypes -------------------------------------------------------*/
-
-/**
- * @brief 初始化CAN总线
- *
- * @param hcan CAN编号
- * @param Callback_Function 处理回调函数
- */
 void CAN_Init(CAN_HandleTypeDef *hcan, CAN_Call_Back Callback_Function)
 {
     HAL_CAN_Start(hcan);
     __HAL_CAN_ENABLE_IT(hcan, CAN_IT_RX_FIFO0_MSG_PENDING);
-    __HAL_CAN_ENABLE_IT(hcan, CAN_IT_RX_FIFO1_MSG_PENDING);
-
+    // FIFO1中断不需要开启，因为Filter全部映射到了FIFO0
+    
     if (hcan->Instance == CAN1)
     {
         CAN1_Manage_Object.CAN_Handler = hcan;
         CAN1_Manage_Object.Callback_Function = Callback_Function;
     }
-   
 }
 
-/**
- * @brief 配置CAN的滤波器
- *
- * @param hcan CAN编号
- * @param Object_Para 编号[3:] | FIFOx[2:2] | ID类型[1:1] | 帧类型[0:0]
- * @param ID ID
- * @param Mask_ID 屏蔽位(0x7ff, 0x1fffffff)
- */
 void CAN_Filter_Mask_Config(CAN_HandleTypeDef *hcan, uint8_t Object_Para, uint32_t ID, uint32_t Mask_ID)
 {
     CAN_FilterTypeDef can_filter_init_structure;
+    if (Object_Para & 0x01) return;
+    if ((Object_Para & 0x02) >> 1) return;
 
-    // 看第0位ID, 判断是数据帧还是遥控帧
-    // 遥控帧暂不处理
-    if (Object_Para & 0x01)
-    {
-        return;
-    }
-
-    // 看第1位ID, 判断是标准帧还是扩展帧
-    // 扩展帧暂不处理
-    if ((Object_Para & 0x02) >> 1)
-    {
-        return;
-    }
-
-    // 标准帧
-
-    // ID配置, 标准帧的ID是11bit, 按规定放在高16bit中的[15:5]位
-    // 掩码后ID的高16bit
     can_filter_init_structure.FilterIdHigh = (ID & 0x7FF) << 5;
-    // 掩码后ID的低16bit
     can_filter_init_structure.FilterIdLow = 0x0000;
-    // 掩码后屏蔽位的高16bit
     can_filter_init_structure.FilterMaskIdHigh = (Mask_ID & 0x7FF) << 5;
-    // 掩码后屏蔽位的低16bit
     can_filter_init_structure.FilterMaskIdLow = 0x0000;
-
-    // 滤波器配置
-    // 滤波器序号, 0-27, 共28个滤波器, can1是0~13, can2是14~27
     can_filter_init_structure.FilterBank = (Object_Para >> 3) & 0x1F;
-    // 滤波器模式, 设置ID掩码模式
     can_filter_init_structure.FilterMode = CAN_FILTERMODE_IDMASK;
-    // 32位滤波
     can_filter_init_structure.FilterScale = CAN_FILTERSCALE_32BIT;
-    // 使能滤波器
     can_filter_init_structure.FilterActivation = ENABLE;
-
-    // 从机模式配置
-    // 从机模式选择开始单元, 一般均分14个单元给CAN1和CAN2
     can_filter_init_structure.SlaveStartFilterBank = 14;
-
-    // 滤波器绑定FIFOx, 只能绑定一个
     can_filter_init_structure.FilterFIFOAssignment = (Object_Para >> 2) & 0x01;
 
     HAL_CAN_ConfigFilter(hcan, &can_filter_init_structure);
 }
 
-/**
- * @brief 发送数据帧
- *
- * @param hcan CAN编号
- * @param ID ID
- * @param Data 被发送的数据指针
- * @param Length 长度
- * @return uint8_t 执行状态
- */
 uint8_t CAN_Send_Data(CAN_HandleTypeDef *hcan, uint16_t ID, uint8_t *Data, uint16_t Length)
 {
     CAN_TxHeaderTypeDef tx_header;
     uint32_t used_mailbox;
-
-    //检测传参是否正确
     assert_param(hcan != NULL);
-
     tx_header.StdId = ID;
     tx_header.ExtId = 0;
     tx_header.IDE = 0;
     tx_header.RTR = 0;
     tx_header.DLC = Length;
-
     return (HAL_CAN_AddTxMessage(hcan, &tx_header, Data, &used_mailbox));
 }
 
-/**
- * @brief CAN的TIM定时器中断发送回调函数
- *
- */
 void TIM_CAN_PeriodElapsedCallback()
 {
-
-    // CAN1电机
+    // 你的 main.c 开启了 TIM6，并在 stm32f4xx_it.c 中调用了此函数，这里是正确的发送逻辑
     CAN_Send_Data(&hcan1, 0x200, CAN1_0x200_Tx_Data, 8);
-   
 }
 
 /**
  * @brief HAL库CAN接收FIFO0中断
- *
- * @param hcan CAN编号
  */
 void HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef *hcan)
-{
-    //接收缓冲区
-    static Struct_CAN_Rx_Buffer can_rx_buffer;
-
-    //选择回调函数
-    if (hcan->Instance == CAN1)
-    {
-        HAL_CAN_GetRxMessage(hcan, CAN_FILTER_FIFO0, &can_rx_buffer.Header, can_rx_buffer.Data);
-        CAN1_Manage_Object.Callback_Function(&can_rx_buffer);
-    }
-
-}
-
-/**
- * @brief HAL库CAN接收FIFO1中断
- *
- * @param hcan CAN编号
- */
-Motor_Measure_t motor_chassis[4]; 
- void HAL_CAN_RxFifo1MsgPendingCallback(CAN_HandleTypeDef *hcan)
 {
     CAN_RxHeaderTypeDef rx_header;
     uint8_t rx_data[8];
 
+    // 获取数据
     HAL_CAN_GetRxMessage(hcan, CAN_RX_FIFO0, &rx_header, rx_data);
 
-    // 假设使用 DJI 3508/2006 电机
-    // ID 0x201 -> motor[0], ID 0x202 -> motor[1]...
+    // 1. 处理电机反馈 (DJI电机 ID通常为 0x201-0x204)
     if (rx_header.StdId >= 0x201 && rx_header.StdId <= 0x204)
     {
         uint8_t index = rx_header.StdId - 0x201;
-        
-        // 解析转速 (高8位在data[2], 低8位在data[3])
+        // 解析转速 (高8位在前)
         motor_chassis[index].speed_rpm = (int16_t)(rx_data[2] << 8 | rx_data[3]);
         motor_chassis[index].real_current = (int16_t)(rx_data[4] << 8 | rx_data[5]);
+        // 如果需要位置环，还需要处理 total_angle
+    }
+
+    // 2. 如果有其他回调函数 (保留原逻辑)
+    if (hcan->Instance == CAN1 && CAN1_Manage_Object.Callback_Function != NULL)
+    {
+        // 这里的结构体转换和回调是为了兼容你原本的架构
+        // 但注意：Struct_CAN_Rx_Buffer 需要在头文件中定义完整
+        static Struct_CAN_Rx_Buffer can_rx_buffer;
+        can_rx_buffer.Header = rx_header;
+        for(int i=0; i<8; i++) can_rx_buffer.Data[i] = rx_data[i];
+        CAN1_Manage_Object.Callback_Function(&can_rx_buffer);
     }
 }
-
-
-/************************ COPYRIGHT(C) USTC-ROBOWALKER **************************/

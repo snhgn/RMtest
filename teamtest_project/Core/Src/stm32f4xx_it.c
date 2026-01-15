@@ -21,6 +21,7 @@
 #include "main.h"
 #include "stm32f4xx_it.h"
 #include "drv_can.h"
+#include "remote.h"
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 /* USER CODE END Includes */
@@ -236,7 +237,20 @@ void CAN1_RX0_IRQHandler(void)
 void USART3_IRQHandler(void)
 {
   /* USER CODE BEGIN USART3_IRQn 0 */
-
+ if(__HAL_UART_GET_FLAG(&huart3, UART_FLAG_IDLE) != RESET)
+  {
+      __HAL_UART_CLEAR_IDLEFLAG(&huart3); // 清除标志位
+      
+      // 停止DMA以获取数据长度（可选，如果不关心长度可跳过）
+      HAL_UART_DMAStop(&huart3);
+      
+      // 处理数据
+      rx_buffer(rxBuff); // 或者是 rx_buffer，请确认你在 main.c 中传给 HAL_UART_Receive_DMA 的缓冲变量名
+      
+      // 重新开启DMA接收，准备下一次数据
+      // 注意：这里长度设为18字节（DBUS协议标准长度），或者是你 buffer 的大小
+      HAL_UART_Receive_DMA(&huart3, rxBuff, 18); 
+  }
   /* USER CODE END USART3_IRQn 0 */
   HAL_UART_IRQHandler(&huart3);
   /* USER CODE BEGIN USART3_IRQn 1 */
