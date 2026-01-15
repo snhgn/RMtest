@@ -20,8 +20,6 @@
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
 #include "stm32f4xx_it.h"
-#include "drv_can.h"
-#include "remote.h"
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 /* USER CODE END Includes */
@@ -61,6 +59,7 @@ extern CAN_HandleTypeDef hcan1;
 extern TIM_HandleTypeDef htim6;
 extern DMA_HandleTypeDef hdma_usart3_rx;
 extern UART_HandleTypeDef huart3;
+extern UART_HandleTypeDef huart6;
 /* USER CODE BEGIN EV */
 
 /* USER CODE END EV */
@@ -270,6 +269,20 @@ void TIM6_DAC_IRQHandler(void)
   /* USER CODE BEGIN TIM6_DAC_IRQn 1 */
   TIM_CAN_PeriodElapsedCallback();
   /* USER CODE END TIM6_DAC_IRQn 1 */
+}
+
+/**
+  * @brief This function handles USART6 global interrupt.
+  */
+void USART6_IRQHandler(void)
+{
+  /* USER CODE BEGIN USART6_IRQn 0 */
+
+  /* USER CODE END USART6_IRQn 0 */
+  HAL_UART_IRQHandler(&huart6);
+  /* USER CODE BEGIN USART6_IRQn 1 */
+
+  /* USER CODE END USART6_IRQn 1 */
 }
 
 /* USER CODE BEGIN 1 */

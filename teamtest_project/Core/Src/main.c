@@ -104,13 +104,13 @@ int main(void)
   MX_CAN1_Init();
   MX_USART3_UART_Init();
   MX_TIM6_Init();
+  MX_USART6_UART_Init();
   /* USER CODE BEGIN 2 */
   rc_init();
   CAN_Filter_Mask_Config(&hcan1, CAN_FILTER(0) | CAN_FIFO_0 | CAN_STDID | CAN_DATA_TYPE, 0, 0);
   HAL_CAN_Start(&hcan1);
   HAL_CAN_ActivateNotification(&hcan1, CAN_IT_RX_FIFO0_MSG_PENDING);
   HAL_TIM_Base_Start_IT(&htim6); 
-  HAL_UART_Receive_DMA(&huart3, rxBuff, 18); // DBUS数据包通常为18字节
   __HAL_UART_ENABLE_IT(&huart3, UART_IT_IDLE);
   Chassis_Init();
   /* USER CODE END 2 */

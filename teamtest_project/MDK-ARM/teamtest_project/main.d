@@ -40,10 +40,3 @@ teamtest_project\main.o: ../Core/Inc/can.h
 teamtest_project\main.o: ../Core/Inc/dma.h
 teamtest_project\main.o: ../Core/Inc/tim.h
 teamtest_project\main.o: ../Core/Inc/usart.h
-teamtest_project\main.o: ../Core/Inc/gpio.h
-teamtest_project\main.o: ..\user\chassis_task.h
-teamtest_project\main.o: ..\user\drv_can.h
-teamtest_project\main.o: ..\user\pid.h
-teamtest_project\main.o: ..\user\remote.h
-teamtest_project\main.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdlib.h
-teamtest_project\main.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\math.h
