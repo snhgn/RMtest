@@ -111,7 +111,8 @@ int main(void)
   HAL_CAN_ActivateNotification(&hcan1, CAN_IT_RX_FIFO0_MSG_PENDING);
   HAL_TIM_Base_Start_IT(&htim6); 
   HAL_UART_Receive_DMA(&huart3, rx_buffer, 18); // DBUS数据包通常为18字节
-__HAL_UART_ENABLE_IT(&huart3, UART_IT_IDLE);
+  __HAL_UART_ENABLE_IT(&huart3, UART_IT_IDLE);
+  Chassis_Init();
   /* USER CODE END 2 */
 
   /* Infinite loop */
