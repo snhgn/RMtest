@@ -19,7 +19,7 @@
 
 /* Private variables ---------------------------------------------------------*/
 
-Struct_CAN_Manage_Object CAN1_Manage_Object = {0};
+struct Struct_CAN_Manage_Object CAN1_Manage_Object = {0};
 
 // CAN通信发送缓冲区
 uint8_t CAN1_0x200_Tx_Data[8];
@@ -46,11 +46,7 @@ void CAN_Init(CAN_HandleTypeDef *hcan, CAN_Call_Back Callback_Function)
         CAN1_Manage_Object.CAN_Handler = hcan;
         CAN1_Manage_Object.Callback_Function = Callback_Function;
     }
-    else if (hcan->Instance == CAN2)
-    {
-        CAN2_Manage_Object.CAN_Handler = hcan;
-        CAN2_Manage_Object.Callback_Function = Callback_Function;
-    }
+   
 }
 
 /**
