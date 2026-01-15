@@ -28,8 +28,10 @@
 #include "drv_can.h"
 #include "pid.h"
 #include "remote.h"
-#include <stdlib.h> 
-#include <math.h>   
+#include "stdlib.h"
+#include "math.h"
+#include "stdio.h"
+#include "string.h"
 extern void Chassis_Init(void);
 extern void Chassis_Loop(void);
 
@@ -56,7 +58,11 @@ extern void Chassis_Loop(void);
 /* Private variables ---------------------------------------------------------*/
 
 /* USER CODE BEGIN PV */
-
+extern UART_HandleTypeDef huart6; // 引用你在 CubeMX 里生成的 huart6
+uint8_t usart6_rx_buffer[1];      // 接收一个字节的临时缓冲
+char pid_cmd_buffer[50];          // 存储完整指令的缓冲
+uint8_t pid_cmd_index = 0;        // 索引
+extern PID_TypeDef pid_chassis[4]; // 引用底盘PID结构体
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -106,6 +112,7 @@ int main(void)
   MX_TIM6_Init();
   MX_USART6_UART_Init();
   /* USER CODE BEGIN 2 */
+  HAL_UART_Receive_IT(&huart6, usart6_rx_buffer, 1);
   rc_init();
   CAN_Filter_Mask_Config(&hcan1, CAN_FILTER(0) | CAN_FIFO_0 | CAN_STDID | CAN_DATA_TYPE, 0, 0);
   HAL_CAN_Start(&hcan1);
@@ -174,7 +181,51 @@ void SystemClock_Config(void)
 }
 
 /* USER CODE BEGIN 4 */
-
+int _write(int file, char *ptr, int len)
+{
+  HAL_UART_Transmit(&huart6, (uint8_t*)ptr, len, 0xFFFF);
+  return len;
+}
+void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
+{
+    if(huart->Instance == USART6)
+    {
+        // 如果接收到换行符 '\n'，说明一条指令结束
+        if(usart6_rx_buffer[0] == '\n')
+        {
+            pid_cmd_buffer[pid_cmd_index] = '\0'; // 添加字符串结束符
+            
+            // 解析指令，例如格式 "p=10.5" 或 "i=0.2"
+            // 这里简单示例：修改第0号电机的 PID
+            if(pid_cmd_buffer[0] == 'p' && pid_cmd_buffer[1] == '=')
+            {
+                pid_chassis[0].Kp = atof(&pid_cmd_buffer[2]);
+            }
+            else if(pid_cmd_buffer[0] == 'i' && pid_cmd_buffer[1] == '=')
+            {
+                pid_chassis[0].Ki = atof(&pid_cmd_buffer[2]);
+            }
+            else if(pid_cmd_buffer[0] == 'd' && pid_cmd_buffer[1] == '=')
+            {
+                pid_chassis[0].Kd = atof(&pid_cmd_buffer[2]);
+            }
+            
+            // 清空缓冲区准备下一次接收
+            pid_cmd_index = 0;
+        }
+        else
+        {
+            // 将接收到的字符存入缓冲
+            if(pid_cmd_index < 49) 
+            {
+                pid_cmd_buffer[pid_cmd_index++] = usart6_rx_buffer[0];
+            }
+        }
+        
+        // 重新开启接收
+        HAL_UART_Receive_IT(&huart6, usart6_rx_buffer, 1);
+    }
+}
 /* USER CODE END 4 */
 
 /**

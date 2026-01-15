@@ -41,3 +41,5 @@ teamtest_project\chassis_task_3.o: ..\user\drv_can.h
 teamtest_project\chassis_task_3.o: ..\user\pid.h
 teamtest_project\chassis_task_3.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdlib.h
 teamtest_project\chassis_task_3.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\math.h
+teamtest_project\chassis_task_3.o: ../Core/Inc/usart.h
+teamtest_project\chassis_task_3.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdio.h

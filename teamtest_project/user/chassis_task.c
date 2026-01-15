@@ -3,7 +3,9 @@
 #include "drv_can.h"  // 引用CAN发送缓冲区和电机反馈数据
 #include "pid.h"      // 引用PID算法
 #include <stdlib.h> // 必须包含，用于 abs()
-#include <math.h>  
+#include <math.h> 
+#include "usart.h" // 包含 huart6 定义
+#include "stdio.h" // 包含 sprintf
 // 引用外部定义的全局变量
 extern Rc_Data rc;
 extern uint8_t CAN1_0x200_Tx_Data[8];
@@ -104,7 +106,14 @@ void Chassis_Loop_Handler(void)
         // 填入CAN发送缓冲区
         Set_Motor_Tx_Data(CAN1_0x200_Tx_Data, i, (int16_t)out_current);
     }
+     static char tx_buffer[64];
+    int len = sprintf(tx_buffer, "%.2f,%.2f\n", 
+                      pid_chassis[0].set,   // 目标速度
+                      pid_chassis[0].fdb    // 实际速度
+                      );
     
+    // 使用阻塞发送（简单可靠），如果不想影响电机控制频率，建议改用 DMA
+    HAL_UART_Transmit(&huart6, (uint8_t*)tx_buffer, len, 10);
     // 注意：这里只更新了数据缓冲区 CAN1_0x200_Tx_Data
     // 你需要确保在其他地方（如定时器中断）调用了实际的 CAN 发送函数，
     // 或者在这里直接调用发送函数，例如：
