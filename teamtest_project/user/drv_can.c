@@ -102,7 +102,7 @@ void HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef *hcan)
     {
         // 这里的结构体转换和回调是为了兼容你原本的架构
         // 但注意：Struct_CAN_Rx_Buffer 需要在头文件中定义完整
-        static Struct_CAN_Rx_Buffer can_rx_buffer;
+        static struct Struct_CAN_Rx_Buffer can_rx_buffer;
         can_rx_buffer.Header = rx_header;
         for(int i=0; i<8; i++) can_rx_buffer.Data[i] = rx_data[i];
         CAN1_Manage_Object.Callback_Function(&can_rx_buffer);
