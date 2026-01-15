@@ -35,3 +35,5 @@ teamtest_project\drv_can_3.o: ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_
 teamtest_project\drv_can_3.o: ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_tim.h
 teamtest_project\drv_can_3.o: ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_tim_ex.h
 teamtest_project\drv_can_3.o: ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_uart.h
+teamtest_project\drv_can_3.o: ../Core/Inc/can.h
+teamtest_project\drv_can_3.o: ../Core/Inc/main.h

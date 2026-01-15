@@ -1,8 +1,27 @@
 #include "drv_can.h"
+#include "can.h"
 
 struct Struct_CAN_Manage_Object CAN1_Manage_Object = {0};
 uint8_t CAN1_0x200_Tx_Data[8];
 Motor_Measure_t motor_chassis[4]; // 电机反馈数据
+
+void CAN1_Send_0x200(void)
+{
+    CAN_TxHeaderTypeDef tx_header;
+    uint32_t mailbox;
+
+    tx_header.StdId = 0x200; // 对应电调ID 1-4 (0x201-0x204)
+    tx_header.IDE = CAN_ID_STD;
+    tx_header.RTR = CAN_RTR_DATA;
+    tx_header.DLC = 8;
+    tx_header.TransmitGlobalTime = DISABLE;
+
+    // 只有当有空闲邮箱时才发送，防止堵塞
+    if (HAL_CAN_GetTxMailboxesFreeLevel(&hcan1) > 0)
+    {
+        HAL_CAN_AddTxMessage(&hcan1, &tx_header, CAN1_0x200_Tx_Data, &mailbox);
+    }
+}
 
 void CAN_Init(CAN_HandleTypeDef *hcan, CAN_Call_Back Callback_Function)
 {

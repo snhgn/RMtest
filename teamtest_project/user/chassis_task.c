@@ -6,6 +6,7 @@
 #include <math.h> 
 #include "usart.h" // 包含 huart6 定义
 #include "stdio.h" // 包含 sprintf
+
 // 引用外部定义的全局变量
 extern Rc_Data rc;
 extern uint8_t CAN1_0x200_Tx_Data[8];
@@ -106,12 +107,17 @@ void Chassis_Loop_Handler(void)
         // 填入CAN发送缓冲区
         Set_Motor_Tx_Data(CAN1_0x200_Tx_Data, i, (int16_t)out_current);
     }
-     static char tx_buffer[64];
-    int len = sprintf(tx_buffer, "%.2f,%.2f\n", 
-                      pid_chassis[0].set,   // 目标速度
-                      pid_chassis[0].fdb    // 实际速度
+     CAN1_Send_0x200();
+
+    // 5. 【修改】数据回传 - 适��� SerialPlot 格式 (逗号分隔)
+    // 格式: 目标1,实际1,目标2,实际2,目标3,实际3,目标4,实际4
+    static char tx_buffer[128];
+    int len = sprintf(tx_buffer, "%.1f,%.1f,%.1f,%.1f,%.1f,%.1f,%.1f,%.1f\n", 
+                      pid_chassis[0].set, pid_chassis[0].fdb,
+                      pid_chassis[1].set, pid_chassis[1].fdb,
+                      pid_chassis[2].set, pid_chassis[2].fdb,
+                      pid_chassis[3].set, pid_chassis[3].fdb
                       );
-    
     // 使用阻塞发送（简单可靠），如果不想影响电机控制频率，建议改用 DMA
     HAL_UART_Transmit(&huart6, (uint8_t*)tx_buffer, len, 10);
     // 注意：这里只更新了数据缓冲区 CAN1_0x200_Tx_Data

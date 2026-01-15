@@ -61,7 +61,8 @@ extern DMA_HandleTypeDef hdma_usart3_rx;
 extern UART_HandleTypeDef huart3;
 extern UART_HandleTypeDef huart6;
 /* USER CODE BEGIN EV */
-
+extern uint8_t rxBuff[54]; // 引用 remote.c 中的缓冲区
+extern void rc_processdata(uint8_t* rxBuff); // 确保函数声明可见
 /* USER CODE END EV */
 
 /******************************************************************************/

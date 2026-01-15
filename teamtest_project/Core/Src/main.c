@@ -186,43 +186,47 @@ int _write(int file, char *ptr, int len)
   HAL_UART_Transmit(&huart6, (uint8_t*)ptr, len, 0xFFFF);
   return len;
 }
+// ...
 void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
 {
     if(huart->Instance == USART6)
     {
-        // 如果接收到换行符 '\n'，说明一条指令结束
         if(usart6_rx_buffer[0] == '\n')
         {
-            pid_cmd_buffer[pid_cmd_index] = '\0'; // 添加字符串结束符
+            pid_cmd_buffer[pid_cmd_index] = '\0'; 
             
-            // 解析指令，例如格式 "p=10.5" 或 "i=0.2"
-            // 这里简单示例：修改第0号电机的 PID
-            if(pid_cmd_buffer[0] == 'p' && pid_cmd_buffer[1] == '=')
+            int motor_id = 0; // 默认修改电机1 (ID 0)
+            char *param_start = pid_cmd_buffer;
+
+            // 检查是否有电机ID前缀，例如 "m2 p=10"
+            if(pid_cmd_buffer[0] == 'm' && pid_cmd_buffer[2] == ' ')
             {
-                pid_chassis[0].Kp = atof(&pid_cmd_buffer[2]);
+                motor_id = pid_cmd_buffer[1] - '1'; // '1'->0, '2'->1
+                if(motor_id < 0 || motor_id > 3) motor_id = 0;
+                param_start = &pid_cmd_buffer[3]; // 跳过 "mX "
             }
-            else if(pid_cmd_buffer[0] == 'i' && pid_cmd_buffer[1] == '=')
+
+            // 解析参数 p=, i=, d=
+            if(strncmp(param_start, "p=", 2) == 0)
             {
-                pid_chassis[0].Ki = atof(&pid_cmd_buffer[2]);
+                pid_chassis[motor_id].Kp = atof(param_start + 2);
             }
-            else if(pid_cmd_buffer[0] == 'd' && pid_cmd_buffer[1] == '=')
+            else if(strncmp(param_start, "i=", 2) == 0)
             {
-                pid_chassis[0].Kd = atof(&pid_cmd_buffer[2]);
+                pid_chassis[motor_id].Ki = atof(param_start + 2);
+            }
+            else if(strncmp(param_start, "d=", 2) == 0)
+            {
+                pid_chassis[motor_id].Kd = atof(param_start + 2);
             }
             
-            // 清空缓冲区准备下一次接收
             pid_cmd_index = 0;
         }
         else
         {
-            // 将接收到的字符存入缓冲
             if(pid_cmd_index < 49) 
-            {
                 pid_cmd_buffer[pid_cmd_index++] = usart6_rx_buffer[0];
-            }
         }
-        
-        // 重新开启接收
         HAL_UART_Receive_IT(&huart6, usart6_rx_buffer, 1);
     }
 }
