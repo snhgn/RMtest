@@ -2,7 +2,8 @@
 #include "remote.h"   // 引用遥控器变量 rc
 #include "drv_can.h"  // 引用CAN发送缓冲区和电机反馈数据
 #include "pid.h"      // 引用PID算法
-
+#include <stdlib.h> // 必须包含，用于 abs()
+#include <math.h>  
 // 引用外部定义的全局变量
 extern Rc_Data rc;
 extern uint8_t CAN1_0x200_Tx_Data[8];
@@ -69,6 +70,15 @@ void Chassis_Loop_Handler(void)
     float vx = (abs(rc.ch[0]) < RC_DEADZONE) ? 0 : rc.ch[0]; // 左右平移
     float vy = (abs(rc.ch[1]) < RC_DEADZONE) ? 0 : rc.ch[1]; // 前进后退
     float wz = (abs(rc.ch[2]) < RC_DEADZONE) ? 0 : rc.ch[2]; // 旋转
+    if (vx == 0 && vy == 0 && wz == 0)
+    {
+         for (int i = 0; i < 4; i++) {
+            Set_Motor_Tx_Data(CAN1_0x200_Tx_Data, i, 0);
+            pid_chassis[i].Iout = 0; // 关键：停车时清除积分，防止再次启动时突变
+            pid_chassis[i].out = 0;
+        }
+        return; 
+    }
 
     // 3. 麦克纳姆轮运动学解算 (O型安装)
     // 根据你的电机安装实际ID顺序，可能需要调整正负号

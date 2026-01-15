@@ -245,7 +245,7 @@ void USART3_IRQHandler(void)
       HAL_UART_DMAStop(&huart3);
       
       // 处理数据
-      rx_buffer(rxBuff); // 或者是 rx_buffer，请确认你在 main.c 中传给 HAL_UART_Receive_DMA 的缓冲变量名
+      rc_processdata(rxBuff); // 或者是 rx_buffer，请确认你在 main.c 中传给 HAL_UART_Receive_DMA 的缓冲变量名
       
       // 重新开启DMA接收，准备下一次数据
       // 注意：这里长度设为18字节（DBUS协议标准长度），或者是你 buffer 的大小

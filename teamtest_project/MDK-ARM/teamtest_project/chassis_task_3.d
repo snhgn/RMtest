@@ -38,3 +38,4 @@ teamtest_project\chassis_task_3.o: ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx
 teamtest_project\chassis_task_3.o: ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_uart.h
 teamtest_project\chassis_task_3.o: ..\user\remote.h
 teamtest_project\chassis_task_3.o: ..\user\drv_can.h
+teamtest_project\chassis_task_3.o: ..\user\pid.h

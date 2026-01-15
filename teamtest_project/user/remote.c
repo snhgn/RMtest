@@ -4,7 +4,8 @@
 
 //extern UART_HandleTypeDef huart3;
 //extern DMA_HandleTypeDef hdma_usart3_rx;
-
+#define SBUS_RX_BUF_NUM 18u 
+#define RC_FRAME_LENGTH 18u
 uint8_t rxBuff[54];
 uint8_t* pData = rxBuff;
 
@@ -27,10 +28,10 @@ void rc_init()
     if(huart3.RxState == HAL_UART_STATE_READY)
     {
         huart3.pRxBuffPtr = pData;
-        huart3.RxXferSize = 54;
+        huart3.RxXferSize = RC_FRAME_LENGTH;
         huart3.ErrorCode = HAL_UART_ERROR_NONE;
         //配置DMA
-        HAL_DMA_Start(huart3.hdmarx,(uint32_t)&huart3.Instance -> DR,(uint32_t)rxBuff,54);
+        HAL_DMA_Start(huart3.hdmarx,(uint32_t)&huart3.Instance -> DR,(uint32_t)rxBuff,RC_FRAME_LENGTH);
         //使能串口DMA接受
         SET_BIT(huart3.Instance -> CR3,USART_CR3_DMAR);
     }

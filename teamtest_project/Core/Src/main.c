@@ -28,8 +28,8 @@
 #include "drv_can.h"
 #include "pid.h"
 #include "remote.h"
-#include <stdlib.h>  // 添加标准库头文件，包含了 abs()
-#include <math.h>    // 顺便加上这个，以后用 sin/cos 也要用
+#include <stdlib.h> 
+#include <math.h>   
 extern void Chassis_Init(void);
 extern void Chassis_Loop(void);
 
@@ -110,7 +110,7 @@ int main(void)
   HAL_CAN_Start(&hcan1);
   HAL_CAN_ActivateNotification(&hcan1, CAN_IT_RX_FIFO0_MSG_PENDING);
   HAL_TIM_Base_Start_IT(&htim6); 
-  HAL_UART_Receive_DMA(&huart3, rx_buffer, 18); // DBUS数据包通常为18字节
+  HAL_UART_Receive_DMA(&huart3, rxBuff, 18); // DBUS数据包通常为18字节
   __HAL_UART_ENABLE_IT(&huart3, UART_IT_IDLE);
   Chassis_Init();
   /* USER CODE END 2 */
