@@ -54,3 +54,10 @@ int16_t offset(int16_t rc)
    temp = rc-1024;
     return temp;
 }
+
+typedef struct
+{
+    int16_t ch[4];
+    uint8_t s[2];   // 注意这里你原来是 uint8_t，代码里有时候用 ==2 判断，没问题
+    uint32_t last_update_tick; // 【必须确认有这一行】
+} Rc_Data;

@@ -107,7 +107,6 @@ void Chassis_Loop_Handler(void)
         // 填入CAN发送缓冲区
         Set_Motor_Tx_Data(CAN1_0x200_Tx_Data, i, (int16_t)out_current);
     }
-     CAN1_Send_0x200();
 
     // 5. 【修改】数据回传 - 适��� SerialPlot 格式 (逗号分隔)
     // 格式: 目标1,实际1,目标2,实际2,目标3,实际3,目标4,实际4

@@ -20,6 +20,8 @@
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
 #include "stm32f4xx_it.h"
+#include "drv_can.h"  // 必须引用，否则 TIM_CAN_PeriodElapsedCallback 未定义
+#include "remote.h"   // 必须引用，否则 rxBuff 未定义
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 /* USER CODE END Includes */

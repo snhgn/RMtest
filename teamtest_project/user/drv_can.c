@@ -70,7 +70,7 @@ uint8_t CAN_Send_Data(CAN_HandleTypeDef *hcan, uint16_t ID, uint8_t *Data, uint1
 }
 
 void TIM_CAN_PeriodElapsedCallback()
-{
+{   Chassis_Loop_Handler();
     // 你的 main.c 开启了 TIM6，并在 stm32f4xx_it.c 中调用了此函数，这里是正确的发送逻辑
     CAN_Send_Data(&hcan1, 0x200, CAN1_0x200_Tx_Data, 8);
 }
