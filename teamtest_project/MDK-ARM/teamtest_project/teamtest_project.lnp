@@ -30,6 +30,10 @@
 "teamtest_project\stm32f4xx_hal_tim_ex.o"
 "teamtest_project\stm32f4xx_hal_uart.o"
 "teamtest_project\system_stm32f4xx.o"
+"teamtest_project\chassis_task_3.o"
+"teamtest_project\drv_can_3.o"
+"teamtest_project\pid_3.o"
+"teamtest_project\remote_3.o"
 --strict --scatter "teamtest_project\teamtest_project.sct"
 --summary_stderr --info summarysizes --map --load_addr_map_info --xref --callgraph --symbols
 --info sizes --info totals --info unused --info veneers

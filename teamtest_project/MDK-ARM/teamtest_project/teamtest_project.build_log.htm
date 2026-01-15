@@ -31,19 +31,14 @@ Note: source file '..\user\chassis_task.c' - object file renamed from 'teamtest_
 Note: source file '..\user\drv_can.c' - object file renamed from 'teamtest_project\drv_can.o' to 'teamtest_project\drv_can_3.o'.
 Note: source file '..\user\pid.c' - object file renamed from 'teamtest_project\pid.o' to 'teamtest_project\pid_3.o'.
 Note: source file '..\user\remote.c' - object file renamed from 'teamtest_project\remote.o' to 'teamtest_project\remote_3.o'.
-compiling chassis_task.c...
-..\user\chassis_task.c(69): error:  #20: identifier "abs" is undefined
-      float vx = (abs(rc.ch[0]) < RC_DEADZONE) ? 0 : rc.ch[0]; // 左右平移
-..\user\chassis_task.c: 0 warnings, 1 error
-compiling stm32f4xx_it.c...
-../Core/Src/stm32f4xx_it.c(248): error:  #20: identifier "rx_buffer" is undefined
-        rc_processdata(rx_buffer); // 或者是 rx_buffer，请确认你在 main.c 中传�?HAL_UART_Receive_DMA 的缓冲变量名
-../Core/Src/stm32f4xx_it.c: 0 warnings, 1 error
+compiling remote.c...
 compiling main.c...
-../Core/Src/main.c(113): error:  #20: identifier "rx_buffer" is undefined
-    HAL_UART_Receive_DMA(&huart3, rx_buffer, 18); // DBUS数据包通常�?8字节
-../Core/Src/main.c: 0 warnings, 1 error
-"teamtest_project\teamtest_project.axf" - 3 Error(s), 0 Warning(s).
+compiling stm32f4xx_it.c...
+compiling chassis_task.c...
+linking...
+Program Size: Code=15014 RO-data=458 RW-data=36 ZI-data=2332  
+FromELF: creating hex file...
+"teamtest_project\teamtest_project.axf" - 0 Error(s), 0 Warning(s).
 
 <h2>Software Packages used:</h2>
 
@@ -66,8 +61,7 @@ Package Vendor: Keil
 <h2>Collection of Component Files used:</h2>
 
    * Component: ARM::CMSIS:CORE@5.0.1
-Target not created.
-Build Time Elapsed:  00:00:01
+Build Time Elapsed:  00:00:02
 </pre>
 </body>
 </html>
