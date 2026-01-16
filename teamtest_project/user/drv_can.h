@@ -86,7 +86,7 @@ typedef struct {
     int16_t total_angle; // 如果需要位置环
 } Motor_Measure_t;
 
-extern Motor_Measure_t motor_chassis[4]; // 对应 ID 1~4
+extern volatile Motor_Measure_t motor_chassis[4]; // 对应 ID 1~4 (volatile防止优化)
 #endif
 
 /************************ COPYRIGHT(C) USTC-ROBOWALKER **************************/

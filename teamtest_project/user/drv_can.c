@@ -4,7 +4,7 @@
 #include "remote.h"
 struct Struct_CAN_Manage_Object CAN1_Manage_Object = {0};
 uint8_t CAN1_0x200_Tx_Data[8];
-Motor_Measure_t motor_chassis[4]; // 电机反馈数据
+volatile Motor_Measure_t motor_chassis[4]; // 电机反馈数据 (volatile防止ISR与主循环竞态)
 
 void CAN1_Send_0x200(void)
 {
