@@ -1,7 +1,7 @@
 #include "drv_can.h"
 #include "can.h"
 #include "chassis_task.h" // 【新增】必须加这一行
-#include "remote.c"
+#include "remote.h"
 struct Struct_CAN_Manage_Object CAN1_Manage_Object = {0};
 uint8_t CAN1_0x200_Tx_Data[8];
 Motor_Measure_t motor_chassis[4]; // 电机反馈数据
