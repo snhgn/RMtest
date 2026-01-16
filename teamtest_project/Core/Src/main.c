@@ -126,8 +126,9 @@ int main(void)
   /* USER CODE BEGIN WHILE */
   while (1)
   {
-   Chassis_Loop_Handler();
-   HAL_Delay(2);
+   // Chassis_Loop_Handler() 已在定时器中断中调用，无需在主循环中重复调用
+   // 避免竞态条件和重复执行
+   HAL_Delay(10);
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
