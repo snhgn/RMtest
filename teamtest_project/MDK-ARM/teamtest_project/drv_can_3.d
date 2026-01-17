@@ -38,7 +38,4 @@ teamtest_project\drv_can_3.o: ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_
 teamtest_project\drv_can_3.o: ../Core/Inc/can.h
 teamtest_project\drv_can_3.o: ../Core/Inc/main.h
 teamtest_project\drv_can_3.o: ..\user\chassis_task.h
-teamtest_project\drv_can_3.o: ..\user\remote.c
 teamtest_project\drv_can_3.o: ..\user\remote.h
-teamtest_project\drv_can_3.o: ../Core/Inc/usart.h
-teamtest_project\drv_can_3.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\string.h
