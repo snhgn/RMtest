@@ -25,7 +25,7 @@
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-#include "bsp.h"
+#include "bsp_can.h"
 #include "remote.h"
 /* USER CODE END Includes */
 
@@ -97,7 +97,7 @@ int main(void)
   Can_InitFilterAndStart(&hcan1);
   CAN_TxHeaderTypeDef Can_TxHeader;
   uint8_t Can_TxData[8];
-  CAN_InitTxHeader(&Can_TxHeader,, 0, 8);
+  Can_InitTxHeader(&Can_TxHeader, 0,0, 8);
   rc_init();
   /* USER CODE END 2 */
 

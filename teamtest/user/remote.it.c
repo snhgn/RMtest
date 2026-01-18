@@ -251,5 +251,3 @@ void rx_callback(void)
 
 }
 /* USER CODE END 1 */
-
-```
