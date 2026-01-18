@@ -98,11 +98,7 @@ int main(void)
   MX_USART3_UART_Init();
   /* USER CODE BEGIN 2 */
   Can_InitFilterAndStart(&hcan1);
-  CAN_TxHeaderTypeDef Can_TxHeader;
-  uint8_t Can_TxData[8];
-  Can_InitTxHeader(&Can_TxHeader, 0,0, 8);
   rc_init();
-  PID_Init(&MOTOR_pid,0.0f,0.0f,0.0f,2000.0f,16384.0f);
   Motor_InitAllMotors();
   /* USER CODE END 2 */
 

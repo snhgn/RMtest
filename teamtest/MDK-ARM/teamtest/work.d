@@ -35,3 +35,7 @@ teamtest\work.o: ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_uart.h
 teamtest\work.o: ..\user\motor_alter.h
 teamtest\work.o: ..\user\alg_pid.h
 teamtest\work.o: ..\user\remote.h
+teamtest\work.o: ..\user\work.h
+teamtest\work.o: ..\user\bsp_can.h
+teamtest\work.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\math.h
+teamtest\work.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdlib.h
