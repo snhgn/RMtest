@@ -13,7 +13,6 @@
 #define CAN_UTIL_H
 
 #ifdef __cplusplus
-extern "C" {
 #endif 
 
 #include "can.h"
@@ -34,5 +33,4 @@ void Can_RxMessageCallback(CAN_HandleTypeDef* phcan, CAN_RxHeaderTypeDef* rxhead
 #endif
 
 #ifdef __cplusplus
-}
 #endif

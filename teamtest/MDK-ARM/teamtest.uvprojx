@@ -534,6 +534,21 @@
               <FileType>1</FileType>
               <FilePath>..\user\remote.c</FilePath>
             </File>
+            <File>
+              <FileName>alg_pid.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\user\alg_pid.c</FilePath>
+            </File>
+            <File>
+              <FileName>motor_alter.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\user\motor_alter.c</FilePath>
+            </File>
+            <File>
+              <FileName>work.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\user\work.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>

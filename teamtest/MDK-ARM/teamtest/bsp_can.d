@@ -32,3 +32,4 @@ teamtest\bsp_can.o: ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_flash_ramf
 teamtest\bsp_can.o: ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_pwr.h
 teamtest\bsp_can.o: ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_pwr_ex.h
 teamtest\bsp_can.o: ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_uart.h
+teamtest\bsp_can.o: ..\user\motor_alter.h

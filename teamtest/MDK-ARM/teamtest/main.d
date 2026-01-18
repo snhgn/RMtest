@@ -36,3 +36,7 @@ teamtest\main.o: ../Core/Inc/usart.h
 teamtest\main.o: ../Core/Inc/gpio.h
 teamtest\main.o: ..\user\bsp_can.h
 teamtest\main.o: ..\user\remote.h
+teamtest\main.o: ..\user\alg_pid.h
+teamtest\main.o: ..\user\motor_alter.h
+teamtest\main.o: ..\user\work.h
+teamtest\main.o: ..\user\bsp_can.h

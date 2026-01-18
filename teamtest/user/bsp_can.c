@@ -10,6 +10,7 @@
 
 
 #include "bsp_can.h"
+#include "motor_alter.h"
 
 CAN_RxHeaderTypeDef Can_RxHeader;
 uint8_t Can_RxData[Const_Can_RX_BUFF_LEN];
@@ -105,5 +106,16 @@ void Can_SendMessage(CAN_HandleTypeDef* phcan, CAN_TxHeaderTypeDef* pheader, uin
 }
 
 
-
+/**
+ * @brief        	这个函数用在CAN的中断回调中，用于对接收到的数据进行处理
+ * @param         [CAN_HandleTypeDef*] phcan				指向 CAN 句柄的指针，用于标识具体的 CAN 外设实例
+ * @param         [CAN_RxHeaderTypeDef*] rxheader 	结构体的指针，包含接收到的 CAN 消息的头部信息（如标准标识符 StdId，数据长度码 DLC 等）
+ * @param         [uint8_t] rxdata									存储接收到的 CAN 消息的数据
+ * @return        [type]
+ */
+void Can_RxMessageCallback(CAN_HandleTypeDef* phcan, CAN_RxHeaderTypeDef* rxheader, uint8_t rxdata[]) {
+    if (phcan == &hcan1) {
+        Motor_EncoderDecodeCallback(phcan, rxheader -> StdId, rxdata, rxheader -> DLC);
+    }
+}
 

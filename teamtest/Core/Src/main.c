@@ -27,6 +27,9 @@
 /* USER CODE BEGIN Includes */
 #include "bsp_can.h"
 #include "remote.h"
+#include "alg_pid.h"
+#include "motor_alter.h"
+#include "work.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -58,7 +61,7 @@ void SystemClock_Config(void);
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
-
+PID_TypeDef MOTOR_pid;
 /* USER CODE END 0 */
 
 /**
@@ -99,29 +102,16 @@ int main(void)
   uint8_t Can_TxData[8];
   Can_InitTxHeader(&Can_TxHeader, 0,0, 8);
   rc_init();
+  PID_Init(&MOTOR_pid,0.0f,0.0f,0.0f,2000.0f,16384.0f);
+  Motor_InitAllMotors();
   /* USER CODE END 2 */
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
   while (1)
   { 
-    int16_t vx = rc.ch[1]; 
-    int16_t vy = rc.ch[0];
-    int16_t wz = rc.ch[3];
-    int16_t motor1_speed = vx - vy + wz; // 左前
-    int16_t motor2_speed = vx + vy - wz; // 右前
-    int16_t motor3_speed = vx + vy + wz; // 左后
-    int16_t motor4_speed = vx - vy - wz; // 右后
-
-    Can_TxData[0] = motor1_speed & 0xFF;
-    Can_TxData[1] = (motor1_speed >> 8) & 0xFF;
-    Can_TxData[2] = motor2_speed & 0xFF;
-    Can_TxData[3] = (motor2_speed >> 8) & 0xFF;
-    Can_TxData[4] = motor3_speed & 0xFF;
-    Can_TxData[5] = (motor3_speed >> 8) & 0xFF;
-    Can_TxData[6] = motor4_speed & 0xFF;
-    Can_TxData[7] = (motor4_speed >> 8) & 0xFF;
-    Can_SendMessage(&hcan1, &Can_TxHeader, Can_TxData);
+    
+    Work();
     HAL_Delay(50);
     /* USER CODE END WHILE */
 
