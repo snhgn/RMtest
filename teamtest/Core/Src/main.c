@@ -47,7 +47,7 @@
 /* Private variables ---------------------------------------------------------*/
 
 /* USER CODE BEGIN PV */
-
+extern Rc_Data rc;
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -94,13 +94,35 @@ int main(void)
   MX_CAN1_Init();
   MX_USART3_UART_Init();
   /* USER CODE BEGIN 2 */
-
+  Can_InitFilterAndStart(&hcan1);
+  CAN_TxHeaderTypeDef Can_TxHeader;
+  uint8_t Can_TxData[8];
+  CAN_InitTxHeader(&Can_TxHeader,, 0, 8);
+  rc_init();
   /* USER CODE END 2 */
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
   while (1)
-  {
+  { 
+    int16_t vx = rc.ch[1]; 
+    int16_t vy = rc.ch[0];
+    int16_t wz = rc.ch[3];
+    int16_t motor1_speed = vx - vy + wz; // 左前
+    int16_t motor2_speed = vx + vy - wz; // 右前
+    int16_t motor3_speed = vx + vy + wz; // 左后
+    int16_t motor4_speed = vx - vy - wz; // 右后
+
+    Can_TxData[0] = motor1_speed & 0xFF;
+    Can_TxData[1] = (motor1_speed >> 8) & 0xFF;
+    Can_TxData[2] = motor2_speed & 0xFF;
+    Can_TxData[3] = (motor2_speed >> 8) & 0xFF;
+    Can_TxData[4] = motor3_speed & 0xFF;
+    Can_TxData[5] = (motor3_speed >> 8) & 0xFF;
+    Can_TxData[6] = motor4_speed & 0xFF;
+    Can_TxData[7] = (motor4_speed >> 8) & 0xFF;
+    Can_SendMessage(&hcan1, &Can_TxHeader, Can_TxData);
+    HAL_Delay(50);
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */

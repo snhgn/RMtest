@@ -118,7 +118,4 @@ void Can_RxMessageCallback(CAN_HandleTypeDef* phcan, CAN_RxHeaderTypeDef* rxhead
     if (phcan == &hcan1) {
         Motor_EncoderDecodeCallback(phcan, rxheader -> StdId, rxdata, rxheader -> DLC);
     }
-    if (phcan == &hcan2) {
-        Motor_EncoderDecodeCallback(phcan, rxheader -> StdId, rxdata, rxheader -> DLC);
-    }
 }
